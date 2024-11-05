@@ -74,11 +74,27 @@ public class ABB <T extends Comparable<T>>{
     }
 
     private String listarAscendenteString(NodoABB<T> nodo) {
-        if (nodo != null) {
-            return listarAscendenteString(nodo.izq) + "|" + nodo.dato + "|" + listarAscendenteString(nodo.der);
+        if (nodo == null) {
+            return "";
         }
-        return "";
+
+        // Llamada recursiva para el subárbol izquierdo
+        String resultadoIzq = listarAscendenteString(nodo.izq);
+
+        // Nodo actual y verificación de "|"
+        String nodoActual = nodo.dato.toString();
+
+        if (nodo.izq != null || nodo.der != null) {
+            nodoActual += "|"; // Agrega "|" solo si el nodo tiene al menos un hijo
+        }
+
+        // Llamada recursiva para el subárbol derecho
+        String resultadoDer = listarAscendenteString(nodo.der);
+
+        // Combina los resultados
+        return resultadoIzq + nodoActual + resultadoDer;
     }
+
 
 
     public void listarDescendente() {

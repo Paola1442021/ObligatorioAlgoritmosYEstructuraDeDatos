@@ -77,9 +77,13 @@ public class Jugador implements Comparable<Jugador> {
         // Comparar alfabéticamente por alias
         return this.alias.compareTo(otroJugador.alias);
     }
+
     @Override
     public String toString() {
-        return alias + ";" + nombre + ";" + apellido + ";" + categoria.getTexto();
+        return this.getAlias() + ";" +
+                (this.getNombre() != null ? this.getNombre() : "N/A") + ";" +
+                (this.getApellido() != null ? this.getApellido() : "N/A") + ";" +
+                (this.getCategoria() != null ? this.getCategoria() : "Sin categoría");
     }
 
 
