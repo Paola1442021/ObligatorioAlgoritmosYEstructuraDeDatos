@@ -7,7 +7,7 @@ import tads.Grafo.Conexion;
 import tads.Grafo.Grafo;
 import tads.Grafo.Sucursal;
 import tads.Lista.Lista;
-
+//Paola Moreno 295917
 public class ImplementacionSistema implements Sistema {
     private ABB<Jugador> jugadores;
     private ABB<Jugador> principiantes;
@@ -20,7 +20,7 @@ public class ImplementacionSistema implements Sistema {
 
 
     public ImplementacionSistema() {
-        this.grafo = null;
+        this.grafo = new Grafo(this.maxSucursales);
         this.jugadores = new ABB<Jugador>();
         this.equipos =new ABB<Equipo>();
         this.estandares = new ABB<Jugador>();
@@ -39,6 +39,14 @@ public class ImplementacionSistema implements Sistema {
         /*OK Si el sistema fue inicializado exitosamente*/
         else if (maxSucursales > 3) {
             this.maxSucursales = maxSucursales;
+            //segun el test 3 cuando se inicializa el sistema tiene que quedar vacio
+            this.grafo = new Grafo(this.maxSucursales);
+            this.jugadores.vaciar();
+            this.equipos.vaciar();
+            this.estandares.vaciar();
+            this.profesionales.vaciar();
+            this.principiantes.vaciar();
+            this.cantidadSucursales=0;
             return Retorno.ok();
         } else {
             return Retorno.noImplementada();
@@ -316,25 +324,15 @@ NO_IMPLEMENTADA Cuando aún no se implementó*/
         if (codigoSucursal == null || codigoSucursal.isEmpty()) {
             return Retorno.error1("El código no puede ser vacío ni nulo");
         }
-        Sucursal aux1 = new Sucursal(codigoSucursal, "");
-        boolean resultado = this.grafo.existeSucursal(aux1);
-        if (!resultado) {
+
+        Sucursal sucursal = new Sucursal(codigoSucursal, "");
+        if (!this.grafo.existeSucursal(sucursal)) {
             return Retorno.error2("No existe sucursal con ese código");
-        } else if (resultado) {
-            boolean esCri = this.grafo.esSucursalCritica(aux1);
-            String esCritica = "";
-            if (esCri) {
-                esCritica = "SI";
-            } else {
-                esCritica = "NO";
-            }
-            return Retorno.ok(esCritica);
-        } else {
-            return Retorno.noImplementada();
-
         }
-    }
 
+        String esCritica = this.grafo.esSucursalCritica(sucursal) ? "SI" : "NO";
+        return Retorno.ok(esCritica);
+    }
     /*Retorno sucursalesParaTorneo(String codigoSucursalAnfitriona, int
     latenciaLimite);
     Descripción: Retorna en valorString del retorno una lista de las sucursales ordenadas por código

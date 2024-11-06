@@ -25,6 +25,9 @@ public class ABB <T extends Comparable<T>>{
             return 1 + contarNodos(nodo.izq) + contarNodos(nodo.der);
         }
     }
+    public void vaciar() {
+        raiz = null; // Elimina todas las referencias, vaciando el árbol
+    }
 
     private void insertarRec(T dato, NodoABB<T> nodo) {
         if (nodo.dato.compareTo(dato) > 0) {
@@ -68,9 +71,13 @@ public class ABB <T extends Comparable<T>>{
             listarAscendente(nodo.der);
         }
     }
-
     public String listarAscendenteString() {
-        return listarAscendenteString(raiz);
+        String resultado = listarAscendenteString(this.raiz);
+        // Elimina el último "|" si existe
+        if (resultado.endsWith("|")) {
+            resultado = resultado.substring(0, resultado.length() - 1);
+        }
+        return resultado;
     }
 
     private String listarAscendenteString(NodoABB<T> nodo) {
@@ -81,20 +88,15 @@ public class ABB <T extends Comparable<T>>{
         // Llamada recursiva para el subárbol izquierdo
         String resultadoIzq = listarAscendenteString(nodo.izq);
 
-        // Nodo actual y verificación de "|"
-        String nodoActual = nodo.dato.toString();
-
-        if (nodo.izq != null || nodo.der != null) {
-            nodoActual += "|"; // Agrega "|" solo si el nodo tiene al menos un hijo
-        }
+        // Nodo actual
+        String nodoActual = nodo.dato.toString() + "|"; // Agrega "|" después del nodo
 
         // Llamada recursiva para el subárbol derecho
         String resultadoDer = listarAscendenteString(nodo.der);
 
-        // Combina los resultados
+        // Construir el resultado
         return resultadoIzq + nodoActual + resultadoDer;
     }
-
 
 
     public void listarDescendente() {
@@ -109,14 +111,30 @@ public class ABB <T extends Comparable<T>>{
         }
     }
     public String listarDescendenteString() {
-        return listarDescendenteString(raiz);
+        String resultado = listarDescendenteString(this.raiz);
+        // Elimina el último "|" si existe
+        if (resultado.endsWith("|")) {
+            resultado = resultado.substring(0, resultado.length() - 1);
+        }
+        return resultado;
     }
 
     private String listarDescendenteString(NodoABB<T> nodo) {
-        if (nodo != null) {
-            return listarDescendenteString(nodo.der) + "|" + nodo.dato + "|" + listarDescendenteString(nodo.izq);
+        if (nodo == null) {
+            return "";
         }
-        return "";
+
+        // Llamada recursiva para el subárbol derecho
+        String resultadoDer = listarDescendenteString(nodo.der);
+
+        // Nodo actual
+        String nodoActual = nodo.dato.toString() + "|"; // Agrega "|" después del nodo
+
+        // Llamada recursiva para el subárbol izquierdo
+        String resultadoIzq = listarDescendenteString(nodo.izq);
+
+        // Construir el resultado
+        return resultadoDer + nodoActual + resultadoIzq;
     }
 
     public T borrarMinimo() {

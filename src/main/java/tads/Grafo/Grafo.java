@@ -73,12 +73,13 @@ public class Grafo implements IGrafo{
 
     private int obtenerPosSucursal(Sucursal v) {
         for (int i = 0; i < this.cantMAxSucursales; i++) {
-            if (this.sucursales[i].equals(v)) {
+            if (this.sucursales[i] != null && this.sucursales[i].equals(v)) {
                 return i;
             }
         }
         return -1;
     }
+
 
     @Override
     public void borrarSucursal(Sucursal v) {
@@ -132,8 +133,10 @@ public class Grafo implements IGrafo{
             return false;
         }
 
-        return this.matAdy[posOrigen][posDestino].isExiste();
+        // Verifica la conexión en ambas direcciones para grafos no dirigidos
+        return this.matAdy[posOrigen][posDestino].isExiste() || this.matAdy[posDestino][posOrigen].isExiste();
     }
+
     @Override
     public boolean existeSucursal(Sucursal v) {
         return this.obtenerPosSucursal(v) >= 0;
@@ -226,50 +229,50 @@ public class Grafo implements IGrafo{
         }
     }
     public boolean esSucursalCritica(Sucursal sucursal) {
-        // Obtener la posición de la sucursal a verificar
         int posSucursal = this.obtenerPosSucursal(sucursal);
-
-        // Verificar si la sucursal existe
         if (posSucursal == -1) {
             return false; // La sucursal no existe
         }
 
-        // Marcamos la sucursal como "eliminada" temporalmente
         boolean[] visitados = new boolean[this.cantMAxSucursales];
 
-        // Realizamos DFS desde el primer nodo disponible que no es la sucursal a eliminar
+        // Elegimos un nodo inicial para el DFS, asegurándonos de que no sea el que queremos "eliminar"
         int nodoInicial = 0;
         while (nodoInicial < this.cantMAxSucursales && (this.sucursales[nodoInicial] == null || nodoInicial == posSucursal)) {
             nodoInicial++;
         }
 
-        // Si no hay nodos disponibles para iniciar, la sucursal es crítica
         if (nodoInicial >= this.cantMAxSucursales) {
-            return true; // No hay más nodos, significa que al eliminar esta sucursal se desconecta todo
+            return false; // No hay otros nodos para verificar
         }
 
-        // Llamada a DFS
+        // Ejecutamos DFS excluyendo la sucursal crítica
         dfsSinSucursal(nodoInicial, visitados, posSucursal);
 
-        // Verificamos si todos los demás nodos fueron visitados
+        // Revisamos si quedaron nodos no alcanzados (lo cual haría crítica a la sucursal eliminada)
         for (int i = 0; i < this.cantMAxSucursales; i++) {
             if (i != posSucursal && this.sucursales[i] != null && !visitados[i]) {
-                return true; // Si hay algún nodo no visitado, la sucursal es crítica
+                return true; // Si algún nodo no fue alcanzado, la sucursal es crítica
             }
         }
-
-        return false; // La sucursal no es crítica
+        return false; // La sucursal no es crítica si todos los demás nodos son alcanzables
     }
-
-    // Método auxiliar para realizar DFS sin contar la sucursal eliminada
     private void dfsSinSucursal(int nodo, boolean[] visitados, int posSucursalEliminada) {
         visitados[nodo] = true;
+        System.out.println("Visitando nodo: " + nodo);
+
         for (int i = 0; i < this.cantMAxSucursales; i++) {
+            // Verificar si el nodo i está conectado al nodo actual, no ha sido visitado, y no es el nodo a eliminar
             if (i != posSucursalEliminada && !visitados[i] && matAdy[nodo][i].isExiste()) {
+                System.out.println("Explorando conexión entre nodo " + nodo + " y nodo " + i);
                 dfsSinSucursal(i, visitados, posSucursalEliminada);
             }
         }
     }
+
+
+
+
 
 
 
