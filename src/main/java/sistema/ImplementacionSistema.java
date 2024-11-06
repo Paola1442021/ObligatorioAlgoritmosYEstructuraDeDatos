@@ -10,9 +10,10 @@ import tads.Lista.Lista;
 //Paola Moreno 295917
 public class ImplementacionSistema implements Sistema {
     private ABB<Jugador> jugadores;
-    private ABB<Jugador> principiantes;
-    private ABB<Jugador> estandares;
-    private ABB<Jugador> profesionales;
+    private Lista<Jugador>jugadoresAListar;
+    private Lista<Jugador> principiantes;
+    private Lista<Jugador> estandares;
+    private Lista<Jugador> profesionales;
     private ABB<Equipo> equipos;
     private Grafo grafo;
     private int cantidadSucursales;
@@ -23,10 +24,11 @@ public class ImplementacionSistema implements Sistema {
         this.grafo = new Grafo(this.maxSucursales);
         this.jugadores = new ABB<Jugador>();
         this.equipos =new ABB<Equipo>();
-        this.estandares = new ABB<Jugador>();
-        this.profesionales =new ABB<Jugador>();
-        this.principiantes = new ABB<Jugador>();
+        this.estandares = new Lista<Jugador>();
+        this.profesionales =new Lista<Jugador>();
+        this.principiantes = new Lista<Jugador>();
         this.cantidadSucursales=0;
+        this.jugadoresAListar=new Lista<Jugador>();
 
     }
 
@@ -47,6 +49,7 @@ public class ImplementacionSistema implements Sistema {
             this.profesionales.vaciar();
             this.principiantes.vaciar();
             this.cantidadSucursales=0;
+            this.jugadoresAListar.vaciar();
             return Retorno.ok();
         } else {
             return Retorno.noImplementada();
@@ -78,6 +81,7 @@ public class ImplementacionSistema implements Sistema {
                 if (categoria.getTexto().equals("Principiante")) {
                     this.principiantes.insertar(aAgregar);
                 }
+                this.jugadoresAListar.insertar(aAgregar);
                 return Retorno.ok();}
         else{
             return Retorno.noImplementada();
@@ -113,7 +117,7 @@ public class ImplementacionSistema implements Sistema {
     @Override
     public Retorno listarJugadoresAscendente() {
         if (this.jugadores != null) {
-            String jugadores = this.jugadores.listarAscendenteString();
+            String jugadores = this.jugadoresAListar.listarAscendente();
             return Retorno.ok(jugadores);
         }
         return Retorno.noImplementada();
@@ -123,19 +127,19 @@ public class ImplementacionSistema implements Sistema {
     public Retorno listarJugadoresPorCategoria(Categoria unaCategoria) {
         if (unaCategoria.getTexto().equals("Principiante")) {
             if (this.principiantes != null) {
-                String jugadores = this.principiantes.listarAscendenteString();
+                String jugadores = this.principiantes.listarAscendente();
                 return Retorno.ok(jugadores);
             }
         }
         if (unaCategoria.getTexto().equals("Estándar")) {
             if (this.estandares != null) {
-                String jugadores = this.estandares.listarAscendenteString();
+                String jugadores = this.estandares.listarAscendente();
                 return Retorno.ok(jugadores);
             }
         }
         if (unaCategoria.getTexto().equals("Profesional")) {
             if (this.profesionales != null) {
-                String jugadores = this.profesionales.listarAscendenteString();
+                String jugadores = this.profesionales.listarAscendente();
                 return Retorno.ok(jugadores);
             }
         }
